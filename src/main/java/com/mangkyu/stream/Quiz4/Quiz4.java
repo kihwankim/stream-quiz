@@ -2,8 +2,9 @@ package com.mangkyu.stream.Quiz4;
 
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Quiz4 {
 
@@ -30,31 +31,56 @@ public class Quiz4 {
     }
 
     public List<Transaction> quiz1() {
-        return Collections.emptyList();
+        return transactions.stream()
+                .filter(t -> t.getYear() == 2020)
+                .sorted(Comparator.comparingInt(Transaction::getValue))
+                .collect(Collectors.toList());
     }
 
     public List<String> quiz2() {
-        return Collections.emptyList();
+        return transactions.stream()
+                .map(tra -> tra.getTrader().getCity())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Trader> quiz3() {
-        return Collections.emptyList();
+        return transactions.stream()
+                .map(Transaction::getTrader)
+                .filter(trader -> trader.getCity().equals("Seoul"))
+                .distinct()
+                .sorted(Comparator.comparing(Trader::getName))
+                .collect(Collectors.toList());
     }
 
     public String quiz4() {
-        return null;
+        return transactions.stream()
+                .map(t -> t.getTrader().getName())
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(","));
     }
 
     public boolean quiz5() {
-        return false;
+        return transactions.stream()
+                .anyMatch(transaction -> transaction.getTrader().getCity().equals("Busan"));
     }
 
     public List<Integer> quiz6() {
-        return Collections.emptyList();
+        return transactions.stream()
+                .filter(transaction -> transaction.getTrader().getCity().equals("Seoul"))
+                .map(Transaction::getValue)
+                .collect(Collectors.toList());
     }
 
     public Integer[] quiz7() {
-        return new Integer[]{0, 0};
+        Integer[] arr = new Integer[2];
+        arr[0] = transactions.stream()
+                .map(Transaction::getValue)
+                .reduce(0, Math::max);
+        arr[1] = transactions.stream().map(Transaction::getValue)
+                .min(Comparator.comparingInt(o -> o)).orElse(0);
+        return arr;
     }
 
 }
